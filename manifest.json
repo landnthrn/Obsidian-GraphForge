@@ -1,0 +1,10 @@
+{
+  "id": "GraphForge",
+  "name": "GraphForge",
+  "version": "1.0.0",
+  "minAppVersion": "1.5.0",
+  "description": "Automatically creates and maintain's a graph view of your notes, if their organized into folders. Allowing for folders to be the root node, which just makes sense visually. Additionally provides a quick access hub note display for each folder.",
+  "author": "landn.thrn",
+  "authorUrl": "https://github.com/landnthrn",
+  "isDesktopOnly": false
+}
