@@ -13,9 +13,6 @@
   </tr>
 </table>
 
-
-
-
 # Obsidian GraphForge
 
 Automatically creates and maintain's a graph view of your notes, if their
@@ -25,10 +22,10 @@ folder.
 
 ### HOW IT WORKS?
 
-Creates a note for each folder (hidden by default). These act has
+Creates a note for each folder (hidden by default). These act as
 folder nodes in graph view that all notes inside their folders attach to. Links to
 each hub note get added at the top of notes, connecting them together to their
-folder node. Option's to customize the feet Of the workflow to your liking.
+folder node. Options to customize the feel of the workflow to your liking.
 
 ---
 
