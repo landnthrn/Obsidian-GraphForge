@@ -1,3 +1,16 @@
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/344d3c2d-4724-490e-8cb8-8095a40d00e0" width="900" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c52050fb-6e2c-4d20-9463-f9c87d354bad" width="850" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4ab5e042-01e3-4881-a06e-0d02c74d037a" width="850" />
+</p>
+
+
 # Obsidian GraphForge
 
 Automatically creates and maintain's a graph view of your notes, if their
