@@ -43,7 +43,7 @@ folder node. Options to customize the feel of the workflow to your liking.
 
 - Use the refresh button inside Obsidian settings > Community Plugin's
 
-- Enabled the GraphForge plugin
+- Enable the GraphForge plugin
 
 ---
 
