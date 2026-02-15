@@ -207,6 +207,10 @@ export async function upsertHubLinkInNote(
 	// Strip any hub-style link at top (folder=null = any suffix+#) so we replace, not prepend.
 	const afterHub = stripLeadingHubLinkLines(lines, null, settings);
 	let rest = lines.slice(afterHub).join("\n");
+	// When removing hub link (note at root), also remove the separator line if present so it never remains.
+	if (correctLink == null) {
+		rest = rest.replace(/^\s*\n?---\s*\n\s*/, "");
+	}
 	const hubNote = await isHubNote(vault, note, settings);
 	if (hubNote) {
 		// Hub notes: no link at top; parent link lives under ## DIRECTORY only.

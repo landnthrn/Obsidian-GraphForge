@@ -10,6 +10,7 @@ import { registerVaultEvents } from "./vaultEvents";
 
 export default class GraphforgePlugin extends Plugin {
 	settings: HubSettings;
+	private fileExplorerMutationObserver: MutationObserver | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -18,12 +19,35 @@ export default class GraphforgePlugin extends Plugin {
 		registerVaultEvents(this);
 		registerFolderDirectoryProcessor(this, this.settings);
 		injectHideCSS(this.settings);
+		// Decorate immediately and at intervals so hub notes are hidden before first paint and after any delayed DOM.
+		decorateFileExplorer(this.app, this.settings).catch(() => {});
+		const scheduleDecorate = () => decorateFileExplorer(this.app, this.settings).catch(() => {});
 		this.registerEvent(
-			this.app.workspace.on("layout-change", () => {
-				decorateFileExplorer(this.app, this.settings).catch(() => {});
-			})
+			this.app.workspace.on("layout-change", scheduleDecorate)
 		);
-		setTimeout(() => decorateFileExplorer(this.app, this.settings).catch(() => {}), 500);
+		[0, 50, 150, 400, 600].forEach((ms) => {
+			this.registerInterval(window.setTimeout(scheduleDecorate, ms));
+		});
+		// Re-decorate when file explorer DOM changes so new .nav-file nodes get the hide class before they flash.
+		const attachObserver = () => {
+			if (this.fileExplorerMutationObserver) return;
+			const container = document.querySelector(".nav-files-container");
+			if (!container) return;
+			let rafId = 0;
+			const observer = new MutationObserver(() => {
+				if (!this.settings.hideHubNotesInExplorer) return;
+				if (rafId) cancelAnimationFrame(rafId);
+				rafId = requestAnimationFrame(() => {
+					rafId = 0;
+					scheduleDecorate();
+				});
+			});
+			observer.observe(container, { childList: true, subtree: true });
+			this.fileExplorerMutationObserver = observer;
+		};
+		attachObserver();
+		this.registerInterval(window.setTimeout(attachObserver, 100));
+		this.registerInterval(window.setTimeout(attachObserver, 500));
 		if (this.settings.realTimeUpdating && !this.settings.autoCreateSuppressedUntilBuildRefresh) {
 			this.registerInterval(
 				window.setTimeout(() => this.runStartupRefresh(), STARTUP_DELAY_MS)
@@ -37,7 +61,10 @@ export default class GraphforgePlugin extends Plugin {
 		decorateFileExplorer(this.app, this.settings).catch(() => {});
 	}
 
-	onunload() {}
+	onunload() {
+		this.fileExplorerMutationObserver?.disconnect();
+		this.fileExplorerMutationObserver = null;
+	}
 
 	/** Same as Build/Refresh buttons: hub notes then hub links. Clears auto-create suppressed; saves settings. */
 	async buildRefreshHubNotes(): Promise<void> {

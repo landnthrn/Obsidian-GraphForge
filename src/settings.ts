@@ -72,7 +72,7 @@ export const DEFAULT_SETTINGS: HubSettings = {
 	folderDirectoryColor: "#7B61E2",
 	realTimeUpdating: true,
 	excludeHubLinksFromSelectAll: true,
-	insertSeparatorAfterHubLink: false,
+	insertSeparatorAfterHubLink: true,
 	// true = no hub/link creation on startup or real-time until user runs Build/Refresh (first-time, after Remove, or after suffix change).
 	autoCreateSuppressedUntilBuildRefresh: true,
 };
