@@ -169,7 +169,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Real-time updating")
-			.setDesc("Keep all hub notes and hub links in notes up to date through location changes, renames, and such. If disabled, updates will only occur when manually using the Build/Refresh buttons above.")
+			.setDesc("Keep all hub notes and hub links in notes up to date through location changes, renames, and such. If disabled, updates will only occur when manually using the Build/refresh buttons above.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.realTimeUpdating).onChange(async (v) => {
 					this.plugin.settings.realTimeUpdating = v;
@@ -180,7 +180,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		// Custom suffix: save on Enter or blur only
 		const suffixSetting = new Setting(containerEl)
 			.setName("Custom suffix for foldersuffix(#) notes and links")
-			.setDesc("Custom suffix for hub note names and hub links ( _ , -- , ( , ; ). **Use Build/Refresh buttons to see changes!**");
+			.setDesc("Custom suffix for hub note names and hub links ( _ , -- , ( , ; ). **Use Build/refresh buttons to see changes!**");
 		const suffixInput = suffixSetting.controlEl.createEl("input", {
 			type: "text",
 			value: this.plugin.settings.hubSuffix,
@@ -256,7 +256,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Fix hidden text blink on opening a note")
-			.setDesc("When text is hidden on the first lines of notes, it blinks on opening. This fixes that (requires two of the top lines). **Use Build/Refresh buttons to see changes!**")
+			.setDesc("When text is hidden on the first lines of notes, it blinks on opening. This fixes that (requires two of the top lines). **Use Build/refresh buttons to see changes!**")
 			.addToggle((t) => {
 			t.setValue(this.plugin.settings.removeHiddenBlink);
 			t.setDisabled(!this.plugin.settings.autoHideHubLinks);
@@ -306,7 +306,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Add a separator line after hub link in notes")
-			.setDesc("When enabled, a `---` line will be inserted below hub links in notes.  **Use Build/Refresh buttons to see changes!**")
+			.setDesc("When enabled, a `---` line will be inserted below hub links in notes.  **Use Build/refresh buttons to see changes!**")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.insertSeparatorAfterHubLink).onChange(async (v) => {
 					this.plugin.settings.insertSeparatorAfterHubLink = v;
