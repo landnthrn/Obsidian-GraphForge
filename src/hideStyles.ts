@@ -4,11 +4,7 @@
 
 import type { App } from "obsidian";
 import { Vault } from "obsidian";
-import {
-	CSS_CLASS_HUB_IN_EXPLORER,
-	CSS_CLASS_OB_HIDE,
-	HIDE_STYLE_EL_ID,
-} from "./constants";
+import { CSS_CLASS_HUB_IN_EXPLORER, HIDE_STYLE_EL_ID } from "./constants";
 import { getExpectedHubNameForFolder } from "./hubForFolder";
 import { isRootFolder, shouldSkipPath, type PathSkipOptions } from "./pathRules";
 import type { HubSettings } from "./settings";

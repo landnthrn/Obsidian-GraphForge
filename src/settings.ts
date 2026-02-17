@@ -10,9 +10,9 @@ class RestoreConfirmModal extends Modal {
 	}
 
 	onOpen() {
-		this.titleEl.setText("Restore settings?");
+		this.titleEl.setText("Restore to default?");
 		this.contentEl.createEl("p", {
-			text: "Are you sure you want to restore all settings to their default values? This cannot be undone.",
+			text: "Are you sure you want to restore all options to their default values? This cannot be undone.",
 			cls: "setting-item-description",
 		});
 		const btnWrap = this.contentEl.createDiv({ cls: "modal-button-container" });
@@ -128,47 +128,47 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName("Graph creation").setHeading();
 
 		new Setting(containerEl)
-			.setName("Build/refresh foldersuffix(#) notes")
+			.setName("Build/refresh foldernamesuffix(#) notes")
 			.setDesc("Creates hub notes for each folder (hidden by default). These act as folder nodes in graph view. Shared named folders are supported by a # sequence in filename, in order of note creation time.")
 			.addButton((btn) =>
 				btn
-					.setButtonText("Build/refresh foldersuffix(#) notes")
+					.setButtonText("Build/refresh hub notes")
 					.setCta()
 					.onClick(() => this.plugin.buildRefreshHubNotes())
 			);
 
 		new Setting(containerEl)
-			.setName("Build/refresh foldersuffix(#) links in notes")
+			.setName("Build/refresh foldernamesuffix(#) links in notes")
 			.setDesc("Adds hub links at the top of all notes that are inside folders, linking all notes to their appropriate hub note. You can hide the links from your notes with the options below.")
 			.addButton((btn) =>
 				btn
-					.setButtonText("Build/refresh foldersuffix(#) links in notes")
+					.setButtonText("Build/refresh hub links in notes")
 					.setCta()
 					.onClick(() => this.plugin.buildRefreshHubLinks())
 			);
 
 		new Setting(containerEl)
-			.setName("Remove foldersuffix(#) notes")
+			.setName("Remove foldernamesuffix(#) notes")
 			.setDesc("Remove all hub notes (foldersuffix(#) notes). This will only take effect on notes that match their folder name, plus suffix (and number for shared-name folders).")
 			.addButton((btn) =>
 				btn
-					.setButtonText("Remove foldersuffix(#) notes")
+					.setButtonText("Remove hub notes")
 					.setWarning()
 					.onClick(() => this.plugin.removeAllHubNotes())
 			);
 
 		new Setting(containerEl)
-			.setName("Remove foldersuffix(#) links from notes")
+			.setName("Remove foldernamesuffix(#) links from notes")
 			.setDesc("Remove all hub links (foldersuffix(#) links inside notes. This will only take effect on links in your notes that match the hub note name, plus suffix (and number for shared-name folders).")
 			.addButton((btn) =>
 				btn
-					.setButtonText("Remove foldersuffix(#) links from notes")
+					.setButtonText("Remove hub links from notes")
 					.setWarning()
 					.onClick(() => this.plugin.removeAllHubLinks())
 			);
 
 		new Setting(containerEl)
-			.setName("Real time updating")
+			.setName("Real-time updating")
 			.setDesc("Keep all hub notes and hub links in notes up to date through location changes, renames, and such. If disabled, updates will only occur when manually using the Build/Refresh buttons above.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.realTimeUpdating).onChange(async (v) => {
@@ -179,7 +179,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		// Custom suffix: save on Enter or blur only
 		const suffixSetting = new Setting(containerEl)
-			.setName("Custom suffix for foldersuffix(#) notes & links")
+			.setName("Custom suffix for foldersuffix(#) notes and links")
 			.setDesc("Custom suffix for hub note names and hub links ( _ , -- , ( , ; ). **Use Build/Refresh buttons to see changes!**");
 		const suffixInput = suffixSetting.controlEl.createEl("input", {
 			type: "text",
@@ -190,8 +190,11 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		let pendingSuffix = this.plugin.settings.hubSuffix;
 		suffixInput.addEventListener("input", () => {
 			const v = suffixInput.value;
-			const invalid = /[<>:"/\\|?*]/.test(v) || /[\u0000-\u001F]/.test(v);
-			if (invalid) {
+			const hasInvalidChars = /[<>:"/\\|?*]/.test(v) || [...v].some((c) => {
+				const code = c.charCodeAt(0);
+				return code >= 0 && code <= 31;
+			});
+			if (hasInvalidChars) {
 				suffixInput.value = this.plugin.settings.hubSuffix;
 				pendingSuffix = this.plugin.settings.hubSuffix;
 				return;
@@ -207,10 +210,12 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		suffixInput.addEventListener("keydown", (e) => {
 			if (e.key === "Enter") {
 				e.preventDefault();
-				saveSuffix();
+				void saveSuffix();
 			}
 		});
-		suffixInput.addEventListener("blur", () => saveSuffix());
+		suffixInput.addEventListener("blur", () => {
+			void saveSuffix();
+		});
 
 		new Setting(containerEl).setName("Hide/unhide options").setHeading();
 
@@ -251,7 +256,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Fix hidden text blink on opening a note")
-			.setDesc("When text is hidden on the first lines of notes, it blinks on opening. This fixes that (Requires two of the top lines). **Use Build/Refresh buttons to see changes!**")
+			.setDesc("When text is hidden on the first lines of notes, it blinks on opening. This fixes that (requires two of the top lines). **Use Build/Refresh buttons to see changes!**")
 			.addToggle((t) => {
 			t.setValue(this.plugin.settings.removeHiddenBlink);
 			t.setDisabled(!this.plugin.settings.autoHideHubLinks);
@@ -265,7 +270,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			});
 		});
 
-		new Setting(containerEl).setName("Misc settings").setHeading();
+		new Setting(containerEl).setName("Misc").setHeading();
 
 		new Setting(containerEl)
 			.setName("Exclude folders (exact names)")
@@ -311,7 +316,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Edit folder directory card color")
-			.setDesc("Custom Hex color code for folder directory cards displayed in hub notes.")
+			.setDesc("Custom hex color code for folder directory cards displayed in hub notes.")
 			.addText((txt) =>
 				txt
 					.setValue(this.plugin.settings.folderDirectoryColor)
@@ -329,17 +334,17 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Restore settings to default")
-			.setDesc("Reset all settings to default.")
+			.setName("Restore to default")
+			.setDesc("Reset all options to their default values.")
 			.addButton((btn) =>
-				btn.setButtonText("Restore settings").setWarning().onClick(() => {
+				btn.setButtonText("Restore to default").setWarning().onClick(() => {
 					new RestoreConfirmModal(this.app, async () => {
 						this.plugin.settings = { ...DEFAULT_SETTINGS, skipFolderNames: [...DEFAULT_SETTINGS.skipFolderNames] };
 						this.plugin.settings.skipFolderNames = [this.app.vault.configDir, ".trash", "ATTACHMENTS"];
 						await this.plugin.saveSettings();
 						this.plugin.refreshHideState();
 						this.display();
-						new Notice("Settings restored to defaults.");
+						new Notice("Restored to defaults.");
 					}).open();
 				})
 			);

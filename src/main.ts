@@ -28,7 +28,9 @@ export default class GraphforgePlugin extends Plugin {
 			})
 		);
 		[0, 50, 150, 400, 600].forEach((ms) => {
-			this.registerInterval(window.setTimeout(scheduleDecorate, ms));
+			this.registerInterval(window.setTimeout(() => {
+				void scheduleDecorate();
+			}, ms));
 		});
 		// Re-decorate when file explorer DOM changes so new .nav-file nodes get the hide class before they flash.
 		const attachObserver = () => {
@@ -41,7 +43,7 @@ export default class GraphforgePlugin extends Plugin {
 				if (rafId) cancelAnimationFrame(rafId);
 				rafId = requestAnimationFrame(() => {
 					rafId = 0;
-					scheduleDecorate();
+					void scheduleDecorate();
 				});
 			});
 			observer.observe(container, { childList: true, subtree: true });
@@ -52,7 +54,9 @@ export default class GraphforgePlugin extends Plugin {
 		this.registerInterval(window.setTimeout(attachObserver, 500));
 		if (this.settings.realTimeUpdating && !this.settings.autoCreateSuppressedUntilBuildRefresh) {
 			this.registerInterval(
-				window.setTimeout(() => this.runStartupRefresh(), STARTUP_DELAY_MS)
+				window.setTimeout(() => {
+					void this.runStartupRefresh();
+				}, STARTUP_DELAY_MS)
 			);
 		}
 	}
