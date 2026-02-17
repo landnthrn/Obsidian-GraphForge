@@ -1,8 +1,148 @@
 /*
+ * GraphForge plugin styles.
+ * Loaded by Obsidian when the plugin is enabled.
+ */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+/* Hide hub links in notes and hub notes in file explorer (classes applied by plugin) */
+.graphforge-ob-hide {
+	display: none !important;
+}
 
-If your plugin does not need CSS, delete this file.
+.graphforge-hub-note-explorer {
+	display: none !important;
+}
 
-*/
+/* Folder directory block (hub note display); color controlled by --graphforge-folder-directory-color */
+.folder-directory-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 12px;
+	margin: 16px 0;
+}
+
+.folder-directory-card {
+	background-color: var(--graphforge-folder-directory-color, #7b61e2);
+	border-radius: 8px;
+	padding: 12px;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.folder-directory-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.folder-directory-card-title {
+	font-family: system-ui, -apple-system, sans-serif;
+	font-weight: 600;
+	font-size: 14px;
+	color: white;
+	margin: 0 0 4px 0;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.folder-directory-card-date {
+	font-family: system-ui, -apple-system, sans-serif;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.8);
+	margin: 4px 0 0 0;
+}
+
+.folder-directory-card-link {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+
+.folder-directory-card-link:hover {
+	text-decoration: none;
+}
+
+.folder-directory-card-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.folder-directory-card-header .folder-directory-card-title {
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+}
+
+.folder-directory-card-icon {
+	--icon-size: 18px;
+	display: flex;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.folder-directory-card-subtitle {
+	font-family: system-ui, -apple-system, sans-serif;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.8);
+	margin: 4px 0 0 0;
+}
+
+/* Settings tab (REVIEW_NOTES: use CSS classes instead of element.style; setCssProps) */
+.graphforge-settings-banner {
+	max-width: 560px;
+	width: 100%;
+	display: block;
+	margin-bottom: 24px;
+	margin-left: 0;
+	margin-right: auto;
+}
+
+.graphforge-settings-title {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.graphforge-settings-desc-spacer {
+	margin-bottom: 1.5em;
+}
+
+.graphforge-found-useful-wrap {
+	margin-top: 28px;
+	margin-bottom: 12px;
+}
+
+.graphforge-found-useful-title-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 0;
+	max-width: 100%;
+}
+
+.graphforge-found-useful-heading {
+	font-size: 1.25em;
+	font-weight: bold;
+	flex-shrink: 0;
+}
+
+.graphforge-found-useful-gif {
+	vertical-align: middle;
+	flex-shrink: 0;
+	display: block;
+}
+
+.graphforge-found-useful-badges {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 6px;
+	align-items: flex-start;
+}
+
+.graphforge-badge-link img {
+	display: block;
+	height: 28px;
+}

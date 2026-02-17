@@ -6,7 +6,6 @@ import { Editor, MarkdownView, Notice } from "obsidian";
 import { CSS_CLASS_OB_HIDE } from "./constants";
 import { getSelectAllExcludeLineCount } from "./linksInNotes";
 import type GraphforgePlugin from "./main";
-import type { HubSettings } from "./settings";
 
 const OB_HIDE_SPAN_REGEX = new RegExp(
 	`<span class="${CSS_CLASS_OB_HIDE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}">([\\s\\S]*?)</span>`,

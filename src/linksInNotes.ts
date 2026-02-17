@@ -201,7 +201,6 @@ export async function upsertHubLinkInNote(
 	settings: HubSettings
 ): Promise<void> {
 	const correctLink = await getCorrectHubLinkForNote(vault, note, settings);
-	const folder = note.parent;
 	const content = await vault.read(note);
 	const lines = content.split("\n");
 	// Strip any hub-style link at top (folder=null = any suffix+#) so we replace, not prepend.

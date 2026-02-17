@@ -19,9 +19,8 @@ class RestoreConfirmModal extends Modal {
 		const cancel = btnWrap.createEl("button", { text: "Cancel" });
 		const restore = btnWrap.createEl("button", { text: "Restore", cls: "mod-warning" });
 		cancel.addEventListener("click", () => this.close());
-		restore.addEventListener("click", async () => {
-			await this.onConfirm();
-			this.close();
+		restore.addEventListener("click", () => {
+			void Promise.resolve(this.onConfirm()).then(() => this.close());
 		});
 	}
 
@@ -58,7 +57,7 @@ export const DEFAULT_SETTINGS: HubSettings = {
 	hubSuffix: "_",
 	previousHubSuffix: "_",
 	hubInsertTitle: "## DIRECTORY",
-	skipFolderNames: [".obsidian", ".trash", "ATTACHMENTS"],
+	skipFolderNames: [".trash", "ATTACHMENTS"],
 	skipDotFolders: true,
 	parentLinkForSubfolderHubs: true,
 	updateHubOnFolderRename: true,
@@ -111,50 +110,39 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		const banner = containerEl.createEl("img", { cls: "graphforge-settings-banner" });
 		banner.setAttribute("src", "https://raw.githubusercontent.com/landnthrnnn/DUMP/refs/heads/main/GraphForge%20Title%20-%20Galaxy%201.2.png");
 		banner.setAttribute("alt", "GraphForge");
-		banner.style.maxWidth = "560px";
-		banner.style.width = "100%";
-		banner.style.display = "block";
-		banner.style.marginBottom = "24px";
-		banner.style.marginLeft = "0";
-		banner.style.marginRight = "auto";
 
-		const titleEl = containerEl.createEl("div", { cls: "graphforge-settings-title", text: "GraphForge" });
-		titleEl.style.fontSize = "1.5em";
-		titleEl.style.fontWeight = "bold";
-		titleEl.style.marginBottom = "4px";
-		containerEl.createEl("h2", { text: "by landn.thrn", cls: "plugin-author" });
+		containerEl.createEl("div", { cls: "graphforge-settings-title", text: "GraphForge" });
+		new Setting(containerEl).setName("by landn.thrn").setHeading();
 		containerEl.createEl("p", {
-			text: "Automatically creates and maintain's a graph view of your notes, if their organized into folders. Allowing for folders to be the root node, which just makes sense visually. Additionally provides a quick access hub note display for each folder.",
+			text: "Automatically creates and maintains a graph view of your notes, if they're organized into folders. Folders act as the root node in graph view. Provides a quick access hub note display for each folder.",
 			cls: "plugin-description",
 		});
 		const howItWorksP = containerEl.createEl("p", { cls: "plugin-description" });
 		howItWorksP.appendChild(containerEl.createEl("strong", { text: "How it works?" }));
 		containerEl.createEl("p", {
-			text: "Creates a foldersuffix(#) note for each folder (hidden by default). These act has folder nodes in graph view that all notes inside their folders attach to. Links to each hub note get added at the top of all notes, connecting them together to their folder node. Option's to customize the feel of the workflow to your liking.",
+			text: "Creates a foldersuffix(#) note for each folder (hidden by default). These act as folder nodes in graph view that all notes inside their folders attach to. Links to each hub note get added at the top of all notes. Options to customize the workflow to your liking.",
 			cls: "plugin-description",
 		});
-		const afterDescSpacer = containerEl.createDiv();
-		afterDescSpacer.style.marginBottom = "1.5em";
+		containerEl.createDiv({ cls: "graphforge-settings-desc-spacer" });
 
-		// --- GRAPH CREATION ---
-		containerEl.createEl("h2", { text: "GRAPH CREATION:" });
+		new Setting(containerEl).setName("Graph creation").setHeading();
 
 		new Setting(containerEl)
-			.setName("Build/Refresh foldersuffix(#) notes")
-			.setDesc("Create's hub notes for each folder (hidden by default). These act as folder nodes in graph view. Shared named folders are supported by a # sequence in filename, in order of note creation time.")
+			.setName("Build/refresh foldersuffix(#) notes")
+			.setDesc("Creates hub notes for each folder (hidden by default). These act as folder nodes in graph view. Shared named folders are supported by a # sequence in filename, in order of note creation time.")
 			.addButton((btn) =>
 				btn
-					.setButtonText("Build/Refresh foldersuffix(#) notes")
+					.setButtonText("Build/refresh foldersuffix(#) notes")
 					.setCta()
 					.onClick(() => this.plugin.buildRefreshHubNotes())
 			);
 
 		new Setting(containerEl)
-			.setName("Build/Refresh foldersuffix(#) links in notes")
+			.setName("Build/refresh foldersuffix(#) links in notes")
 			.setDesc("Adds hub links at the top of all notes that are inside folders, linking all notes to their appropriate hub note. You can hide the links from your notes with the options below.")
 			.addButton((btn) =>
 				btn
-					.setButtonText("Build/Refresh foldersuffix(#) links in notes")
+					.setButtonText("Build/refresh foldersuffix(#) links in notes")
 					.setCta()
 					.onClick(() => this.plugin.buildRefreshHubLinks())
 			);
@@ -201,10 +189,10 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		});
 		let pendingSuffix = this.plugin.settings.hubSuffix;
 		suffixInput.addEventListener("input", () => {
-			const v = (suffixInput as HTMLInputElement).value;
-			const invalid = /[<>:"/\\|?*\x00-\x1f]/.test(v);
+			const v = suffixInput.value;
+			const invalid = /[<>:"/\\|?*]/.test(v) || /[\u0000-\u001F]/.test(v);
 			if (invalid) {
-				(suffixInput as HTMLInputElement).value = this.plugin.settings.hubSuffix;
+				suffixInput.value = this.plugin.settings.hubSuffix;
 				pendingSuffix = this.plugin.settings.hubSuffix;
 				return;
 			}
@@ -224,12 +212,11 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		});
 		suffixInput.addEventListener("blur", () => saveSuffix());
 
-		// --- HIDE/UNHIDE OPTIONS ---
-		containerEl.createEl("h2", { text: "HIDE/UNHIDE OPTIONS:" });
+		new Setting(containerEl).setName("Hide/unhide options").setHeading();
 
 		new Setting(containerEl)
 			.setName("Hide foldersuffix(#) notes in file explorer")
-			.setDesc("When enabled, hub notes will be hidden in the file explorer sidebar, but still appear in graph view, and if your select their links in notes.")
+			.setDesc("When enabled, hub notes will be hidden in the file explorer sidebar, but still appear in graph view, and if you select their links in notes.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.hideHubNotesInExplorer).onChange(async (v) => {
 					this.plugin.settings.hideHubNotesInExplorer = v;
@@ -252,13 +239,13 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					this.plugin.refreshHideState();
 					// Save scroll position before re-render so we can restore it (display() rebuilds the tab and would scroll to top).
-					const scrollEl = containerEl.closest(".vertical-tab-content") ?? (containerEl as HTMLElement).parentElement;
+					const scrollEl = containerEl.closest(".vertical-tab-content") ?? containerEl.parentElement;
 					const scrollTop = scrollEl?.scrollTop ?? 0;
 					this.display();
 					setTimeout(() => {
 						if (scrollEl) scrollEl.scrollTop = scrollTop;
 					}, 0);
-					this.plugin.buildRefreshHubLinks();
+					void this.plugin.buildRefreshHubLinks();
 				})
 			);
 
@@ -278,8 +265,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			});
 		});
 
-		// --- MISC SETTINGS ---
-		containerEl.createEl("h2", { text: "MISC SETTINGS:" });
+		new Setting(containerEl).setName("Misc settings").setHeading();
 
 		new Setting(containerEl)
 			.setName("Exclude folders (exact names)")
@@ -304,7 +290,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Configure Ctrl + A to not select hub links in notes")
+			.setName("Configure Ctrl+A to not select hub links in notes")
 			.setDesc("When using Ctrl + A to select all in notes, exclude selecting hub links foldersuffix(#) links inside notes. This prevents you from accidentally interacting with them.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.excludeHubLinksFromSelectAll).onChange(async (v) => {
@@ -349,6 +335,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 				btn.setButtonText("Restore settings").setWarning().onClick(() => {
 					new RestoreConfirmModal(this.app, async () => {
 						this.plugin.settings = { ...DEFAULT_SETTINGS, skipFolderNames: [...DEFAULT_SETTINGS.skipFolderNames] };
+						this.plugin.settings.skipFolderNames = [this.app.vault.configDir, ".trash", "ATTACHMENTS"];
 						await this.plugin.saveSettings();
 						this.plugin.refreshHideState();
 						this.display();
@@ -357,8 +344,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 				})
 			);
 
-		// --- Debugging ---
-		containerEl.createEl("h2", { text: "Debugging:" });
+		new Setting(containerEl).setName("Debugging").setHeading();
 
 		new Setting(containerEl)
 			.setName("Debug logs")
@@ -370,36 +356,18 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 				})
 			);
 
-		// --- Found this useful? ---
-		const foundUsefulWrap = containerEl.createDiv();
-		foundUsefulWrap.style.marginTop = "28px";
-		foundUsefulWrap.style.marginBottom = "12px";
+		const foundUsefulWrap = containerEl.createDiv({ cls: "graphforge-found-useful-wrap" });
 		const headingRow = foundUsefulWrap.createEl("div", { cls: "graphforge-found-useful-title-row" });
-		headingRow.style.display = "inline-flex";
-		headingRow.style.alignItems = "center";
-		headingRow.style.gap = "6px";
-		headingRow.style.marginBottom = "0";
-		headingRow.style.maxWidth = "100%";
-		const headingText = headingRow.createEl("span", { text: "Found this useful?" });
-		headingText.style.fontSize = "1.25em";
-		headingText.style.fontWeight = "bold";
-		headingText.style.flexShrink = "0";
-		const gif = headingRow.createEl("img", {
+		headingRow.createEl("span", { cls: "graphforge-found-useful-heading", text: "Found this useful?" });
+		headingRow.createEl("img", {
+			cls: "graphforge-found-useful-gif",
 			attr: {
 				src: "https://media.tenor.com/23NitOvEEkMAAAAj/optical-illusion-rotating-head.gif",
 				alt: "",
 				width: "30",
 			},
 		});
-		gif.style.verticalAlign = "middle";
-		gif.style.flexShrink = "0";
-		gif.style.display = "block";
 		const badgeContainer = foundUsefulWrap.createDiv({ cls: "graphforge-found-useful-badges" });
-		badgeContainer.style.display = "flex";
-		badgeContainer.style.flexDirection = "column";
-		badgeContainer.style.gap = "6px";
-		badgeContainer.style.marginTop = "6px";
-		badgeContainer.style.alignItems = "flex-start";
 		const badges: { img: string; href: string }[] = [
 			{
 				img: "https://img.shields.io/badge/Follow%20My%20GitHub%20%3C3-000000?style=for-the-badge&logo=github&logoColor=white",
@@ -430,9 +398,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			const a = badgeContainer.createEl("a", { href: b.href, cls: "graphforge-badge-link" });
 			a.setAttribute("target", "_blank");
 			a.setAttribute("rel", "noopener");
-			const img = a.createEl("img", { attr: { src: b.img, alt: "" } });
-			img.style.display = "block";
-			img.style.height = "28px";
+			a.createEl("img", { attr: { src: b.img, alt: "" } });
 		}
 	}
 }

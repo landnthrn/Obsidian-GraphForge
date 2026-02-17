@@ -23,7 +23,9 @@ export default class GraphforgePlugin extends Plugin {
 		decorateFileExplorer(this.app, this.settings).catch(() => {});
 		const scheduleDecorate = () => decorateFileExplorer(this.app, this.settings).catch(() => {});
 		this.registerEvent(
-			this.app.workspace.on("layout-change", scheduleDecorate)
+			this.app.workspace.on("layout-change", () => {
+				void scheduleDecorate();
+			})
 		);
 		[0, 50, 150, 400, 600].forEach((ms) => {
 			this.registerInterval(window.setTimeout(scheduleDecorate, ms));
@@ -58,7 +60,7 @@ export default class GraphforgePlugin extends Plugin {
 	/** Re-inject hide CSS and re-decorate file explorer. Call when hide settings change. */
 	refreshHideState(): void {
 		injectHideCSS(this.settings);
-		decorateFileExplorer(this.app, this.settings).catch(() => {});
+		void decorateFileExplorer(this.app, this.settings).catch(() => {});
 	}
 
 	onunload() {
@@ -70,7 +72,7 @@ export default class GraphforgePlugin extends Plugin {
 	async buildRefreshHubNotes(): Promise<void> {
 		this.settings.autoCreateSuppressedUntilBuildRefresh = false;
 		await this.saveSettings();
-		await buildRefreshHubNotes(this.app.vault, this.settings);
+		await buildRefreshHubNotes(this.app, this.settings);
 		await this.saveSettings();
 		new Notice("Finished. Built/refreshed hub notes.");
 	}
@@ -87,7 +89,7 @@ export default class GraphforgePlugin extends Plugin {
 	async removeAllHubNotes(): Promise<void> {
 		this.settings.autoCreateSuppressedUntilBuildRefresh = true;
 		await this.saveSettings();
-		await removeAllHubNotes(this.app.vault, this.settings);
+		await removeAllHubNotes(this.app, this.settings);
 		new Notice("Finished. Removed the hub notes from vault.");
 		new Notice("Real time updating is paused until you build/refresh.");
 	}
@@ -106,7 +108,7 @@ export default class GraphforgePlugin extends Plugin {
 		const wasRealTime = this.settings.realTimeUpdating;
 		this.settings.realTimeUpdating = false;
 		try {
-			await buildRefreshHubNotes(this.app.vault, this.settings);
+			await buildRefreshHubNotes(this.app, this.settings);
 			await this.saveSettings();
 			await buildRefreshHubLinks(this.app.vault, this.settings);
 		} finally {
@@ -120,6 +122,8 @@ export default class GraphforgePlugin extends Plugin {
 		this.settings = { ...DEFAULT_SETTINGS, ...data };
 		if (Array.isArray(data?.skipFolderNames)) {
 			this.settings.skipFolderNames = [...data.skipFolderNames];
+		} else {
+			this.settings.skipFolderNames = [this.app.vault.configDir, ".trash", "ATTACHMENTS"];
 		}
 	}
 

@@ -82,10 +82,12 @@ export function registerFolderDirectoryProcessor(
 				setIcon(iconWrap, "folder");
 				header.createDiv({ cls: "folder-directory-card-title", text: subfolder.name });
 				link.createDiv({ cls: "folder-directory-card-subtitle", text: "Folder" });
-				link.onclick = async (e) => {
+				link.onclick = (e) => {
 					e.preventDefault();
-					await ensureHubForFolder(vault, subfolder, settings);
-					plugin.app.workspace.openLinkText(hubPath.replace(/\.md$/, ""), sourcePath, false);
+					void (async () => {
+						await ensureHubForFolder(vault, subfolder, settings);
+						await plugin.app.workspace.openLinkText(hubPath.replace(/\.md$/, ""), sourcePath, false);
+					})();
 				};
 			}
 			// Render note cards
@@ -109,7 +111,7 @@ export function registerFolderDirectoryProcessor(
 				link.onclick = (e) => {
 					e.preventDefault();
 					const linkText = file.path.replace(/\.md$/, "");
-					plugin.app.workspace.openLinkText(linkText, sourcePath, false);
+					void plugin.app.workspace.openLinkText(linkText, sourcePath, false);
 				};
 			}
 		}

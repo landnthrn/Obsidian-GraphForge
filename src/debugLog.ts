@@ -9,6 +9,6 @@ export function log(
 	...args: unknown[]
 ): void {
 	if (settings.debugLogs) {
-		console.log("[GraphForge]", ...args);
+		console.debug("[GraphForge]", ...args);
 	}
 }

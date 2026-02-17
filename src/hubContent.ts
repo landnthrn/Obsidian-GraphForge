@@ -2,7 +2,7 @@
  * Hub creation and content. One hub per folder; content = DIRECTORY heading, optional parent link, folder-directory block.
  */
 
-import { TFile, TFolder, Vault } from "obsidian";
+import { App, TFile, TFolder, Vault } from "obsidian";
 import {
 	findHubInFolder,
 	findHubInFolderWithName,
@@ -161,10 +161,11 @@ export async function handleDuplicateFolderNames(
  * Delete all hub files that use the given suffix (base or numbered) in non-skipped, non-root folders.
  */
 async function deleteAllHubFilesWithSuffix(
-	vault: Vault,
+	app: App,
 	settings: HubSettings,
 	suffix: string
 ): Promise<void> {
+	const vault = app.vault;
 	const options = pathSkipFromSettings(settings);
 	const all = vault.getAllFolders(false);
 	for (const folder of all) {
@@ -176,7 +177,7 @@ async function deleteAllHubFilesWithSuffix(
 			if (child instanceof TFile) {
 				if (child.basename === baseName || numberedPattern.test(child.basename)) {
 					setWriteLock(child.path);
-					await vault.delete(child);
+					await app.fileManager.trashFile(child);
 				}
 			}
 		}
@@ -185,27 +186,29 @@ async function deleteAllHubFilesWithSuffix(
 
 /** Used before creating hubs with new suffix. */
 async function migrateHubSuffix(
-	vault: Vault,
+	app: App,
 	settings: HubSettings,
 	oldSuffix: string
 ): Promise<void> {
-	await deleteAllHubFilesWithSuffix(vault, settings, oldSuffix);
+	await deleteAllHubFilesWithSuffix(app, settings, oldSuffix);
 }
 
 /**
  * Remove all hub notes from the vault (match current suffix and numbered pattern). Does not touch links in notes.
+ * Uses trash so the user's file deletion preference is respected.
  */
-export async function removeAllHubNotes(vault: Vault, settings: HubSettings): Promise<void> {
-	await deleteAllHubFilesWithSuffix(vault, settings, settings.hubSuffix || "_");
+export async function removeAllHubNotes(app: App, settings: HubSettings): Promise<void> {
+	await deleteAllHubFilesWithSuffix(app, settings, settings.hubSuffix || "_");
 }
 
 /**
  * Build/Refresh foldersuffix(#) notes: if suffix changed, migrate (delete old hubs); then iterate non-skipped, non-root folders, ensureHubForFolder each; then numbering pass. No link-in-notes logic.
  */
-export async function buildRefreshHubNotes(vault: Vault, settings: HubSettings): Promise<void> {
+export async function buildRefreshHubNotes(app: App, settings: HubSettings): Promise<void> {
+	const vault = app.vault;
 	const prev = settings.previousHubSuffix ?? settings.hubSuffix;
 	if (prev !== settings.hubSuffix) {
-		await migrateHubSuffix(vault, settings, prev);
+		await migrateHubSuffix(app, settings, prev);
 		// Do not set previousHubSuffix here: link stripping needs it to remove old-suffix links until user runs Build/Refresh links (or changes suffix again in UI).
 	}
 	const options = pathSkipFromSettings(settings);

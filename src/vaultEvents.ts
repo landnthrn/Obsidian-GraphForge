@@ -37,7 +37,7 @@ async function runSuffixMigrationIfNeeded(
 	plugin: PluginWithSave
 ): Promise<boolean> {
 	if (settings.hubSuffix === (settings.previousHubSuffix ?? settings.hubSuffix)) return false;
-	await buildRefreshHubNotes(vault, settings);
+	await buildRefreshHubNotes(plugin.app, settings);
 	await buildRefreshHubLinks(vault, settings);
 	await plugin.saveSettings();
 	return true;
