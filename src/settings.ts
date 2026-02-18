@@ -109,10 +109,10 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		const banner = containerEl.createEl("img", { cls: "graphforge-banner" });
 		banner.setAttribute("src", "https://raw.githubusercontent.com/landnthrnnn/DUMP/refs/heads/main/GraphForge%20Title%20-%20Galaxy%201.2.png");
-		banner.setAttribute("alt", "GraphForge");
+		banner.setAttribute("alt", "Graphforge");
 
-		containerEl.createEl("div", { cls: "graphforge-tab-title", text: "GraphForge" });
-		new Setting(containerEl).setName("by landn.thrn").setHeading();
+		containerEl.createEl("div", { cls: "graphforge-tab-title", text: "Graphforge" });
+		new Setting(containerEl).setName("By landn.thrn").setHeading();
 		containerEl.createEl("p", {
 			text: "Automatically creates and maintains a graph view of your notes, if they're organized into folders. Folders act as the root node in graph view. Provides a quick access hub note display for each folder.",
 			cls: "plugin-description",
@@ -217,7 +217,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			void saveSuffix();
 		});
 
-		new Setting(containerEl).setName("Hide/unhide options").setHeading();
+		new Setting(containerEl).setName("Hide and unhide").setHeading();
 
 		new Setting(containerEl)
 			.setName("Hide foldersuffix(#) notes in file explorer")
@@ -315,7 +315,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Edit folder directory card color")
+			.setName("Folder directory card color")
 			.setDesc("Custom hex color code for folder directory cards displayed in hub notes.")
 			.addText((txt) =>
 				txt
@@ -328,7 +328,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 							this.plugin.refreshHideState();
 						} else {
-							new Notice("Invalid hex color format. Use format like #7B61E2.");
+							new Notice("Invalid hex color format. Use a format like #7B61E2.");
 						}
 					})
 			);
@@ -349,7 +349,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 				})
 			);
 
-		new Setting(containerEl).setName("Debugging options").setHeading();
+		new Setting(containerEl).setName("Debugging").setHeading();
 
 		new Setting(containerEl)
 			.setName("Debug logs")
