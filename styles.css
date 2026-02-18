@@ -90,7 +90,7 @@
 }
 
 /* Settings tab (REVIEW_NOTES: use CSS classes instead of element.style; setCssProps) */
-.graphforge-settings-banner {
+.graphforge-banner {
 	max-width: 560px;
 	width: 100%;
 	display: block;
@@ -99,13 +99,13 @@
 	margin-right: auto;
 }
 
-.graphforge-settings-title {
+.graphforge-tab-title {
 	font-size: 1.5em;
 	font-weight: bold;
 	margin-bottom: 4px;
 }
 
-.graphforge-settings-desc-spacer {
+.graphforge-desc-spacer {
 	margin-bottom: 1.5em;
 }
 

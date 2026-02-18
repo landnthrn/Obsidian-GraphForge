@@ -107,23 +107,23 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		const banner = containerEl.createEl("img", { cls: "graphforge-settings-banner" });
+		const banner = containerEl.createEl("img", { cls: "graphforge-banner" });
 		banner.setAttribute("src", "https://raw.githubusercontent.com/landnthrnnn/DUMP/refs/heads/main/GraphForge%20Title%20-%20Galaxy%201.2.png");
 		banner.setAttribute("alt", "GraphForge");
 
-		containerEl.createEl("div", { cls: "graphforge-settings-title", text: "GraphForge" });
+		containerEl.createEl("div", { cls: "graphforge-tab-title", text: "GraphForge" });
 		new Setting(containerEl).setName("by landn.thrn").setHeading();
 		containerEl.createEl("p", {
 			text: "Automatically creates and maintains a graph view of your notes, if they're organized into folders. Folders act as the root node in graph view. Provides a quick access hub note display for each folder.",
 			cls: "plugin-description",
 		});
 		const howItWorksP = containerEl.createEl("p", { cls: "plugin-description" });
-		howItWorksP.appendChild(containerEl.createEl("strong", { text: "How it works?" }));
+		howItWorksP.appendChild(containerEl.createEl("strong", { text: "How it works" }));
 		containerEl.createEl("p", {
 			text: "Creates a foldersuffix(#) note for each folder (hidden by default). These act as folder nodes in graph view that all notes inside their folders attach to. Links to each hub note get added at the top of all notes. Options to customize the workflow to your liking.",
 			cls: "plugin-description",
 		});
-		containerEl.createDiv({ cls: "graphforge-settings-desc-spacer" });
+		containerEl.createDiv({ cls: "graphforge-desc-spacer" });
 
 		new Setting(containerEl).setName("Graph creation").setHeading();
 
@@ -159,7 +159,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Remove foldernamesuffix(#) links from notes")
-			.setDesc("Remove all hub links (foldersuffix(#) links inside notes. This will only take effect on links in your notes that match the hub note name, plus suffix (and number for shared-name folders).")
+			.setDesc("Remove all hub links (foldersuffix(#) links inside notes). This will only take effect on links in your notes that match the hub note name, plus suffix (and number for shared-name folders).")
 			.addButton((btn) =>
 				btn
 					.setButtonText("Remove hub links from notes")
@@ -169,7 +169,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Real-time updating")
-			.setDesc("Keep all hub notes and hub links in notes up to date through location changes, renames, and such. If disabled, updates will only occur when manually using the Build/refresh buttons above.")
+			.setDesc("Keep all hub notes and hub links in notes up to date through location changes, renames, and such. If disabled, updates will only occur when manually using the build/refresh buttons above.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.realTimeUpdating).onChange(async (v) => {
 					this.plugin.settings.realTimeUpdating = v;
@@ -180,7 +180,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		// Custom suffix: save on Enter or blur only
 		const suffixSetting = new Setting(containerEl)
 			.setName("Custom suffix for foldersuffix(#) notes and links")
-			.setDesc("Custom suffix for hub note names and hub links ( _ , -- , ( , ; ). **Use Build/refresh buttons to see changes!**");
+			.setDesc("Custom suffix for hub note names and hub links ( _ , -- , ( , ; ). Use the build/refresh buttons to see changes.");
 		const suffixInput = suffixSetting.controlEl.createEl("input", {
 			type: "text",
 			value: this.plugin.settings.hubSuffix,
@@ -256,7 +256,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Fix hidden text blink on opening a note")
-			.setDesc("When text is hidden on the first lines of notes, it blinks on opening. This fixes that (requires two of the top lines). **Use Build/refresh buttons to see changes!**")
+			.setDesc("When text is hidden on the first lines of notes, it blinks on opening. This fixes that (requires two of the top lines). Use the build/refresh buttons to see changes.")
 			.addToggle((t) => {
 			t.setValue(this.plugin.settings.removeHiddenBlink);
 			t.setDisabled(!this.plugin.settings.autoHideHubLinks);
@@ -270,11 +270,11 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			});
 		});
 
-		new Setting(containerEl).setName("Misc").setHeading();
+		new Setting(containerEl).setName("Miscellaneous").setHeading();
 
 		new Setting(containerEl)
 			.setName("Exclude folders (exact names)")
-			.setDesc("Enter folder names to ignore anywhere (comma-seperated if multiple) **Use the removal buttons then build/refresh to see changes!**")
+			.setDesc("Enter folder names to ignore anywhere (comma-separated if multiple). Use the removal buttons, then build/refresh to see changes.")
 			.addText((txt) =>
 				txt
 					.setValue(this.plugin.settings.skipFolderNames.join(", "))
@@ -286,7 +286,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Exclude dot-folders")
-			.setDesc("Ignore any folder whose name starts with a dot. (comma-seperated if multiple) **Use the removal buttons then build/refresh to see changes!**")
+			.setDesc("Ignore any folder whose name starts with a dot. (comma-separated if multiple). Use the removal buttons, then build/refresh to see changes.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.skipDotFolders).onChange(async (v) => {
 					this.plugin.settings.skipDotFolders = v;
@@ -295,7 +295,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Configure Ctrl+A to not select hub links in notes")
+			.setName("Configure Ctrl + A to not select hub links in notes")
 			.setDesc("When using Ctrl + A to select all in notes, exclude selecting hub links foldersuffix(#) links inside notes. This prevents you from accidentally interacting with them.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.excludeHubLinksFromSelectAll).onChange(async (v) => {
@@ -306,7 +306,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Add a separator line after hub link in notes")
-			.setDesc("When enabled, a `---` line will be inserted below hub links in notes.  **Use Build/refresh buttons to see changes!**")
+			.setDesc("When enabled, a `---` line will be inserted below hub links in notes. Use the build/refresh buttons to see changes.")
 			.addToggle((t) =>
 				t.setValue(this.plugin.settings.insertSeparatorAfterHubLink).onChange(async (v) => {
 					this.plugin.settings.insertSeparatorAfterHubLink = v;
@@ -328,7 +328,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 							this.plugin.refreshHideState();
 						} else {
-							new Notice("Invalid hex color format. Use format like #7B61E2");
+							new Notice("Invalid hex color format. Use format like #7B61E2.");
 						}
 					})
 			);
@@ -349,7 +349,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 				})
 			);
 
-		new Setting(containerEl).setName("Debugging").setHeading();
+		new Setting(containerEl).setName("Debugging options").setHeading();
 
 		new Setting(containerEl)
 			.setName("Debug logs")
