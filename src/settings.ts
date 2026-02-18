@@ -320,7 +320,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			.addText((txt) =>
 				txt
 					.setValue(this.plugin.settings.folderDirectoryColor)
-					.setPlaceholder("#7B61E2")
+					.setPlaceholder("#7b61e2")
 					.onChange(async (v) => {
 						const valid = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v) || v === "";
 						if (valid) {
@@ -328,7 +328,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 							this.plugin.refreshHideState();
 						} else {
-							new Notice("Invalid hex color format. Use a format like #7B61E2.");
+							new Notice("Invalid hex color format. Use a format like #7b61e2.");
 						}
 					})
 			);
