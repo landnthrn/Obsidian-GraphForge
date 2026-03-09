@@ -53,9 +53,9 @@ folder node. Options to customize the feel of the workflow to your liking.
 
 - Make sure your notes are organized into folders first
 
-- First use the `Build/Refresh foldersuffix(#) notes` button
+- First use the `Build/Refresh hub notes` button
 
-- Then use the `Build/Refresh foldersuffix(#) links in notes` button
+- Then use the `Build/Refresh hub links in notes` button
 
 - Configure the rest of the settings to your liking 
 
