@@ -113,7 +113,7 @@ export function registerCommands(plugin: GraphforgePlugin): void {
 	});
 
 	// Ctrl+A: exclude hub links from selection when setting on
-	plugin.registerDomEvent(document, "keydown", (e: KeyboardEvent) => {
+	plugin.registerDomEvent(activeDocument, "keydown", (e: KeyboardEvent) => {
 		if (!settings.excludeHubLinksFromSelectAll) return;
 		if (!(e.ctrlKey && e.key === "a")) return;
 		const view = app.workspace.getActiveViewOfType(MarkdownView);

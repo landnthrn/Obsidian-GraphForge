@@ -40,11 +40,11 @@ export async function getHubNotePaths(
  * Removes any legacy injected style element from previous versions. Call on load and when hide/color settings change.
  */
 export function injectHideCSS(settings: HubSettings): void {
-	const legacyEl = document.getElementById(HIDE_STYLE_EL_ID);
+	const legacyEl = activeDocument.getElementById(HIDE_STYLE_EL_ID);
 	if (legacyEl) legacyEl.remove();
 
 	const color = settings.folderDirectoryColor || "#7B61E2";
-	document.body.style.setProperty(FOLDER_DIRECTORY_COLOR_VAR, color);
+	activeDocument.body.style.setProperty(FOLDER_DIRECTORY_COLOR_VAR, color);
 }
 
 /**
@@ -55,13 +55,13 @@ export async function decorateFileExplorer(
 	settings: HubSettings
 ): Promise<void> {
 	if (!settings.hideHubNotesInExplorer) {
-		document.querySelectorAll(`.${CSS_CLASS_HUB_IN_EXPLORER}`).forEach((n) => {
+		activeDocument.querySelectorAll(`.${CSS_CLASS_HUB_IN_EXPLORER}`).forEach((n) => {
 			n.classList.remove(CSS_CLASS_HUB_IN_EXPLORER);
 		});
 		return;
 	}
 	const paths = await getHubNotePaths(app.vault, settings);
-	const navFiles = document.querySelectorAll(".nav-file");
+	const navFiles = activeDocument.querySelectorAll(".nav-file");
 	navFiles.forEach((el) => {
 		const path =
 			(el as HTMLElement).getAttribute("data-path") ??

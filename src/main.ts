@@ -35,7 +35,7 @@ export default class GraphforgePlugin extends Plugin {
 		// Re-decorate when file explorer DOM changes so new .nav-file nodes get the hide class before they flash.
 		const attachObserver = () => {
 			if (this.fileExplorerMutationObserver) return;
-			const container = document.querySelector(".nav-files-container");
+			const container = activeDocument.querySelector(".nav-files-container");
 			if (!container) return;
 			let rafId = 0;
 			const observer = new MutationObserver(() => {

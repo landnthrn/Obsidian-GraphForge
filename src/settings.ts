@@ -111,7 +111,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 		banner.setAttribute("src", "https://raw.githubusercontent.com/landnthrnnn/DUMP/refs/heads/main/GraphForge%20Title%20-%20Galaxy%201.2.png");
 		banner.setAttribute("alt", "Graphforge");
 
-		containerEl.createEl("div", { cls: "graphforge-tab-title", text: "Graphforge" });
+		containerEl.createDiv({ cls: "graphforge-tab-title", text: "Graphforge" });
 		new Setting(containerEl).setName("By landn.thrn").setHeading();
 		containerEl.createEl("p", {
 			text: "Automatically creates and maintains a graph view of your notes, if they're organized into folders. Folders act as the root node in graph view. Provides a quick access hub note display for each folder.",
@@ -217,7 +217,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			void saveSuffix();
 		});
 
-		new Setting(containerEl).setName("Hide and unhide").setHeading();
+		new Setting(containerEl).setName("Visibility").setHeading();
 
 		new Setting(containerEl)
 			.setName("Hide foldersuffix(#) notes in file explorer")
@@ -247,7 +247,7 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 					const scrollEl = containerEl.closest(".vertical-tab-content") ?? containerEl.parentElement;
 					const scrollTop = scrollEl?.scrollTop ?? 0;
 					this.display();
-					setTimeout(() => {
+					activeWindow.setTimeout(() => {
 						if (scrollEl) scrollEl.scrollTop = scrollTop;
 					}, 0);
 					void this.plugin.buildRefreshHubLinks();
@@ -362,8 +362,8 @@ export class GraphforgeSettingTab extends PluginSettingTab {
 			);
 
 		const foundUsefulWrap = containerEl.createDiv({ cls: "graphforge-found-useful-wrap" });
-		const headingRow = foundUsefulWrap.createEl("div", { cls: "graphforge-found-useful-title-row" });
-		headingRow.createEl("span", { cls: "graphforge-found-useful-heading", text: "Found this useful?" });
+		const headingRow = foundUsefulWrap.createDiv({ cls: "graphforge-found-useful-title-row" });
+		headingRow.createSpan({ cls: "graphforge-found-useful-heading", text: "Found this useful?" });
 		headingRow.createEl("img", {
 			cls: "graphforge-found-useful-gif",
 			attr: {
