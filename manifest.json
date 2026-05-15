@@ -1,7 +1,7 @@
 {
   "id": "graphforge",
   "name": "GraphForge",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minAppVersion": "1.6.6",
   "description": "Automatic graph creation & maintenance. Plus quick access folder hubs.",
   "author": "landn.thrn",
